@@ -33,8 +33,21 @@
       white-space: pre-wrap;
     }
 
-    #forgive-btn {
+    .response-text {
+      font-size: 18px;
+      color: #ff4d6d;
       margin-top: 20px;
+      white-space: pre-wrap;
+    }
+
+    .button-container {
+      margin-top: 20px;
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+    }
+
+    .forgive-btn {
       background: #ff4d6d;
       color: white;
       border: none;
@@ -44,8 +57,62 @@
       cursor: pointer;
     }
 
-    #forgive-btn:hover {
+    .forgive-btn:hover {
       background: #ff1f4a;
+    }
+
+    .extra-buttons {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .extra-btn {
+      background: #ff80a1;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      text-decoration: none;
+    }
+
+    .extra-btn:hover {
+      background: #ff4d6d;
+    }
+
+    .puppy-image {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 200px;
+      max-height: 200px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      display: none;
+    }
+
+    .sweet-message {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      font-size: 14px;
+      color: #ff4d6d;
+      max-width: 200px;
+      text-align: center;
+      display: none;
     }
 
     .hearts {
@@ -100,20 +167,49 @@
         opacity: 0;
       }
     }
+
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #ff4d6d;
+      opacity: 0.8;
+      animation: confetti-fall 3s linear infinite;
+    }
+
+    @keyframes confetti-fall {
+      0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
   </style>
 </head>
 <body>
 
   <div class="hearts"></div>
+  <div class="extra-buttons">
+    <a class="extra-btn" href="https://open.spotify.com/track/1NCuYqMc8hKMb4cpNTcJbD?si=729ef91a97204b95" target="_blank">Play Our Song 🎶</a>
+    <button class="extra-btn" id="puppy-btn">Puppy Surprise 🐶</button>
+    <button class="extra-btn" id="sweet-btn">Sweet Words 💕</button>
+    <button class="extra-btn" id="confetti-btn">Confetti Party 🎉</button>
+  </div>
+  <img id="puppy-image" class="puppy-image" src="" alt="Puppy">
+  <div id="sweet-message" class="sweet-message"></div>
 
   <div class="message-box">
     <div class="typing-text" id="text"></div>
-    <button id="forgive-btn" style="display:none">I Forgive You 💌</button>
+    <div class="response-text" id="response-text"></div>
+    <div class="button-container" style="display:none" id="button-container">
+      <button class="forgive-btn" id="forgive-btn" onclick="showForgiveResponse()">I Forgive You 💌</button>
+      <button class="forgive-btn" id="dont-forgive-btn" onclick="showAreYouSure()">I Don't Forgive You 😔</button>
+      <button class="forgive-btn" id="are-you-sure-btn" style="display:none" onclick="showIdcResponse()">Are You Sure? 😒</button>
+    </div>
   </div>
-
-  <audio autoplay loop>
-    <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_5c9e1b9a3b.mp3" type="audio/mpeg">
-  </audio>
 
   <script>
     const message = `Dear Raziya,
@@ -133,8 +229,31 @@ With all my heart,
 Farid ❤️`;
 
     const textBox = document.getElementById("text");
-    const button = document.getElementById("forgive-btn");
+    const responseText = document.getElementById("response-text");
+    const buttonContainer = document.getElementById("button-container");
+    const forgiveBtn = document.getElementById("forgive-btn");
+    const dontForgiveBtn = document.getElementById("dont-forgive-btn");
+    const areYouSureBtn = document.getElementById("are-you-sure-btn");
+    const puppyBtn = document.getElementById("puppy-btn");
+    const sweetBtn = document.getElementById("sweet-btn");
+    const confettiBtn = document.getElementById("confetti-btn");
+    const puppyImage = document.getElementById("puppy-image");
+    const sweetMessage = document.getElementById("sweet-message");
     let i = 0;
+
+    const puppyImages = [
+      "https://images.unsplash.com/photo-1601979031925-5b6a9a6c77e3",
+      "https://images.unsplash.com/photo-1583511655826-05700d52f4d9",
+      "https://images.unsplash.com/photo-1517849845537-4d257902454b",
+      "https://images.unsplash.com/photo-1591160690555-5debfba974f7"
+    ];
+
+    const sweetMessages = [
+      "You're my sunshine on a cloudy day! ☀️",
+      "Your smile makes my heart skip a beat! 😘",
+      "I'm so grateful for every moment with you! 💖",
+      "You're the sweetest person I know! 🍬"
+    ];
 
     function typeEffect() {
       if (i < message.length) {
@@ -142,21 +261,69 @@ Farid ❤️`;
         i++;
         setTimeout(typeEffect, 50);
       } else {
-        button.style.display = "inline-block";
+        buttonContainer.style.display = "flex";
+      }
+    }
+
+    function showAreYouSure() {
+      dontForgiveBtn.style.display = "none";
+      areYouSureBtn.style.display = "inline-block";
+    }
+
+    function showIdcResponse() {
+      responseText.innerHTML = "idc i am forgiven 😘🐶🐱🐰";
+      buttonContainer.style.display = "none";
+    }
+
+    function showForgiveResponse() {
+      responseText.innerHTML = "Thank you, my dear! Your forgiveness means everything to me. I promise I won't waste this chance to make things right and cherish you always. ❤️";
+      buttonContainer.style.display = "none";
+    }
+
+    function showPuppy() {
+      puppyImage.src = puppyImages[Math.floor(Math.random() * puppyImages.length)];
+      puppyImage.style.display = "block";
+      setTimeout(() => {
+        puppyImage.style.display = "none";
+      }, 3000);
+    }
+
+    function showSweetMessage() {
+      sweetMessage.innerHTML = sweetMessages[Math.floor(Math.random() * sweetMessages.length)];
+      sweetMessage.style.display = "block";
+      setTimeout(() => {
+        sweetMessage.style.display = "none";
+      }, 3000);
+    }
+
+    function createConfetti() {
+      const colors = ["#ff4d6d", "#ff80a1", "#ffe6ec", "#ffccdc"];
+      for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement("div");
+        confetti.classList.add("confetti");
+        confetti.style.left = Math.random() * 100 + "vw";
+        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDuration = (Math.random() * 2 + 2) + "s";
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 5000);
       }
     }
 
     function createHearts() {
-      const hearts = document.querySelector('.hearts');
+      const hearts = document.querySelector(".hearts");
       setInterval(() => {
-        const heart = document.createElement('div');
-        heart.classList.add('heart');
+        const heart = document.createElement("div");
+        heart.classList.add("heart");
         heart.style.left = Math.random() * 100 + "vw";
         heart.style.animationDuration = (Math.random() * 5 + 5) + "s";
         hearts.appendChild(heart);
         setTimeout(() => heart.remove(), 10000);
       }, 300);
     }
+
+    puppyBtn.addEventListener("click", showPuppy);
+    sweetBtn.addEventListener("click", showSweetMessage);
+    confettiBtn.addEventListener("click", createConfetti);
 
     typeEffect();
     createHearts();
