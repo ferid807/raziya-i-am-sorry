@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>I'm Sorry, Raziya</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to bottom, #ffe6ec, #ffccdc);
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .message-box {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      max-width: 600px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    .typing-text {
+      font-size: 20px;
+      color: #333;
+      white-space: pre-wrap;
+    }
+
+    #forgive-btn {
+      margin-top: 20px;
+      background: #ff4d6d;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      font-size: 16px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    #forgive-btn:hover {
+      background: #ff1f4a;
+    }
+
+    .hearts {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: -1;
+    }
+
+    .heart {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: pink;
+      animation: float 8s linear infinite;
+      opacity: 0.7;
+      transform: rotate(45deg);
+    }
+
+    .heart::before, .heart::after {
+      content: "";
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: pink;
+      border-radius: 50%;
+    }
+
+    .heart::before {
+      top: -10px;
+      left: 0;
+    }
+
+    .heart::after {
+      left: -10px;
+      top: 0;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      50% {
+        opacity: 0.9;
+      }
+      100% {
+        transform: translateY(-100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hearts"></div>
+
+  <div class="message-box">
+    <div class="typing-text" id="text"></div>
+    <button id="forgive-btn" style="display:none">I Forgive You 💌</button>
+  </div>
+
+  <audio autoplay loop>
+    <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_5c9e1b9a3b.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const message = `Dear Raziya,
+
+I’m truly sorry for being a bastard.
+I know I’ve been distant lately, and I realize how much that may have hurt you.
+
+You don’t deserve that.
+
+I love everything about you — especially how smart, mature, strong, and lovely you are.
+You're an incredible person, and I feel so lucky just to know you.
+
+I miss your presence, your warmth, and your strength.
+Please forgive me.
+
+With all my heart,
+Farid ❤️`;
+
+    const textBox = document.getElementById("text");
+    const button = document.getElementById("forgive-btn");
+    let i = 0;
+
+    function typeEffect() {
+      if (i < message.length) {
+        textBox.innerHTML += message.charAt(i);
+        i++;
+        setTimeout(typeEffect, 50);
+      } else {
+        button.style.display = "inline-block";
+      }
+    }
+
+    function createHearts() {
+      const hearts = document.querySelector('.hearts');
+      setInterval(() => {
+        const heart = document.createElement('div');
+        heart.classList.add('heart');
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.animationDuration = (Math.random() * 5 + 5) + "s";
+        hearts.appendChild(heart);
+        setTimeout(() => heart.remove(), 10000);
+      }, 300);
+    }
+
+    typeEffect();
+    createHearts();
+  </script>
+</body>
+</html>
