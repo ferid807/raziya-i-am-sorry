@@ -5,7 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>I'm Sorry, Raziya</title>
   <style>
+  <audio id="click-sound" src="https://cdn.pixabay.com/download/audio/2023/01/18/audio_d1132b7b74.mp3?filename=magic-wand-86191.mp3" preload="auto"></audio>
+  <script>
+  const clickSound = document.getElementById("click-sound");
+
+  function playClickSound() {
+    clickSound.currentTime = 0;
+    clickSound.play();
+  }
+</script>
+
     body {
+      
       margin: 0;
       padding: 0;
       background: linear-gradient(to bottom, #ffe6ec, #ffccdc);
